@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+:root {
+  --background: #070b14;
+  --foreground: #f4f1ea;
+  --gold: #c9a227;
+  --gold-light: #e8d48b;
+  --gold-dark: #8a7015;
+  --navy: #0c1220;
+  --navy-light: #151d2e;
+  --navy-card: #111827;
+  --muted: #94a3b8;
+  --border: rgba(201, 162, 39, 0.18);
+  --accent: #c9a227;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+  --color-navy: var(--navy);
+  --color-navy-light: var(--navy-light);
+  --color-navy-card: var(--navy-card);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Elegant selection */
+::selection {
+  background: rgba(201, 162, 39, 0.35);
+  color: #fff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0f1a;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a3344;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-dark);
+}
+
+/* Utility classes */
+.gold-gradient {
+  background: linear-gradient(135deg, #c9a227 0%, #e8d48b 50%, #c9a227 100%);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #e8d48b 0%, #c9a227 50%, #a88b1e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass {
+  background: rgba(17, 24, 39, 0.65);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(201, 162, 39, 0.12);
+}
+
+.card-hover {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201, 162, 39, 0.35);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(201, 162, 39, 0.15);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #c9a227, #a88b1e);
+  color: #0a0f1a;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+.btn-gold:hover {
+  background: linear-gradient(135deg, #e8d48b, #c9a227);
+  box-shadow: 0 8px 25px -5px rgba(201, 162, 39, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn-outline-gold {
+  border: 1px solid rgba(201, 162, 39, 0.5);
+  color: #e8d48b;
+  background: transparent;
+  transition: all 0.25s ease;
+}
+.btn-outline-gold:hover {
+  background: rgba(201, 162, 39, 0.12);
+  border-color: #c9a227;
+  color: #fff;
+}
+
+.section-padding {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+}
+
+.container-narrow {
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.container-wide {
+  max-width: 90rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}

@@ -33,3 +33,23 @@ Set these as Vercel project environment variables / Gateway routing rules:
 - Grok 4.3: ~$1.25 / $2.50 per 1M tokens — default for architect agent.
 - Grok 4.6 (flagship): ~$2 / $6 per 1M tokens — escalation only, requires orchestrator sign-off.
 - Grok web/X/tool search: ~$5 per 1,000 calls — batch research questions to minimize calls.
+
+## Planned / Not Yet Wired
+
+The following models/providers were proposed as additional specialist agents to speed up parallel
+work. None are connected yet — each requires a verified provider API key or Vercel AI Gateway
+routing entry, plus an `.agent/*.agent.md` role definition, before they can be assigned real
+subtasks. Do not reference these in workflow YAML or agent role files until wired.
+
+| Candidate | Proposed role | Status |
+|---|---|---|
+| Sonar (Perplexity) | Live web research / fact-checking agent | Not connected — needs Perplexity API key |
+| Gemini 3.7 Flash | Fast, low-cost auxiliary coder or summarizer | Not connected — needs Google AI/Vertex API key |
+| Claude Sonnet (Anthropic, extended-thinking variant) | Secondary architecture review / reasoning-heavy tasks | Not connected — needs Anthropic API key |
+| GLM (Zhipu, K-series) | Backup coder agent for cost diversification | Not connected — needs Zhipu API key; verify exact model name/version before wiring |
+| Grok 4.6 (already listed above as flagship escalation) | Escalation-only architect | Partially documented above; still requires Gateway routing confirmation |
+| Nemotron Ultra (NVIDIA) | Backup/local-inference coder agent | Not connected — needs NVIDIA NIM/API access; verify exact model name/version before wiring |
+
+Before enabling any of these, confirm: (1) the exact current model name/version from the
+provider's own documentation, (2) an active API key or Gateway route, and (3) a cost table entry
+like the ones above.

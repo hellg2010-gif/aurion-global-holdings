@@ -3,7 +3,7 @@ import { businesses } from "@/lib/data";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#050b14] border-t border-white/5">
+    <footer className="bg-[#05080f] border-t border-white/5">
       <div className="container-wide section-padding">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div><Link href="/" className="text-sm font-semibold text-white">AURION Global Holdings PLC</Link><p className="mt-4 text-sm text-white/50">Building integrated value chains from Africa to the world.</p></div>

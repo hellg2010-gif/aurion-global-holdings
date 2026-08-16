@@ -1,27 +1,33 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "../globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Analytics } from '@vercel/analytics/next'
+import { Cormorant_Garamond, Manrope } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import './globals.css'
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' })
+const cormorant = Cormorant_Garamond({ subsets: ['latin'], variable: '--font-cormorant' })
 
 export const metadata: Metadata = {
-  title: { default: "AURION Global Holdings PLC | Integrated Value Chains from Africa to the World", template: "%s | AURION Global Holdings PLC" },
-  description: "AURION Global Holdings PLC builds integrated value chains across Mining, Agro-Industry, Jewelry Manufacturing, Green Energy, Aviation & Logistics, and Global E-Commerce — connecting African[...]",
-  keywords: ["AURION", "Ethiopia", "Africa export", "agro industry", "jewelry manufacturing", "mining", "green energy", "e-commerce Africa", "global trade"],
-  openGraph: { title: "AURION Global Holdings PLC", description: "Building integrated value chains from Africa to the world.", type: "website" },
-};
+  title: 'AURION Global Holdings P.L.C. | From the source to the world',
+  description: 'AURION is the global gateway for Ethiopian products, makers, and export trade.',
+  generator: 'v0.app',
+}
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export const viewport: Viewport = {
+  colorScheme: 'dark',
+  themeColor: '#07111c',
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-[#070b14] text-[#f4f1ea] antialiased">
-        <Header />
-        <main className="flex-1 pt-16 md:pt-20">{children}</main>
-        <Footer />
+    <html lang="en" className={`${manrope.variable} ${cormorant.variable} bg-background`}>
+      <body className="font-sans antialiased">
+        {children}
+        {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
-  );
+  )
 }

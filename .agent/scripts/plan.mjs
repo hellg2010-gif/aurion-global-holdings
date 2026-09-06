@@ -27,7 +27,11 @@ function parsePlanContent(content, issueTitle) {
     JSON.parse(normalized);
     return normalized;
   } catch {
-    return JSON.stringify({ summary: issueTitle, subtasks: [], raw: normalized || content });
+    return JSON.stringify({
+      summary: issueTitle || "Planning response unavailable",
+      subtasks: [],
+      error: "The planner response could not be parsed.",
+    });
   }
 }
 
@@ -58,7 +62,7 @@ async function main() {
   });
 
   if (!response.ok) {
-    console.error(`Gateway request failed: ${response.status} ${await response.text()}`);
+    console.error(`Gateway request failed: ${response.status}`);
     process.exit(1);
   }
 

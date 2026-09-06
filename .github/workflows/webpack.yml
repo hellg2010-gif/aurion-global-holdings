@@ -1,29 +1,37 @@
-name: NodeJS with Webpack
+name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+      - feature/**
+      - copilot/**
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
+      - feature/**
+      - copilot/**
+
+permissions:
+  contents: read
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x, 24.x]
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22
+          cache: npm
       - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
-      - name: Build
+        run: npm ci
+      - name: Run tests
+        run: npm test
+      - name: Build application
         run: npm run build
+      - name: Lint application
+        run: npm run lint

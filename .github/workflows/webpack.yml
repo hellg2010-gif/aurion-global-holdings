@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - feature/agentic-orchestration-scaffold
+      - "copilot/**"
   pull_request: {}
 
 permissions:

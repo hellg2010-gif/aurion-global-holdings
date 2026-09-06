@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - feature/agentic-orchestration-scaffold
-  pull_request:
+  pull_request: {}
 
 permissions:
   contents: read

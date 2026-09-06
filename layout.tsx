@@ -1,8 +1,7 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,29 +13,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "AURION Global Holdings PLC | Integrated Value Chains from Africa to the World",
-    template: "%s | AURION Global Holdings PLC",
-  },
+export const metadata = {
+  title: "AURION Global Holdings PLC",
   description:
-    "AURION Global Holdings PLC builds integrated value chains across Mining, Agro-Industry, Jewelry Manufacturing, Green Energy, Aviation & Logistics, and Global E-Commerce — connecting African resources and products to international markets.",
-  keywords: [
-    "AURION",
-    "Ethiopia",
-    "Africa export",
-    "agro industry",
-    "jewelry manufacturing",
-    "mining",
-    "green energy",
-    "e-commerce Africa",
-    "global trade",
-  ],
-  openGraph: {
-    title: "AURION Global Holdings PLC",
-    description: "Building integrated value chains from Africa to the world.",
-    type: "website",
-  },
+    "Building integrated value chains from Africa to the world — connecting resources, manufacturing, logistics and global markets under one strategic platform.",
 };
 
 export default function RootLayout({
@@ -45,10 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-[#070b14] text-[#f4f1ea] antialiased">
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Header />
-        <main className="flex-1 pt-16 md:pt-20">{children}</main>
+        <main>{children}</main>
         <Footer />
       </body>
     </html>

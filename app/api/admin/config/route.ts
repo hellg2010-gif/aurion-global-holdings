@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { createAdminAuditLogger } from "@/lib/audit-events";
 import { getAdminAuthContext } from "@/lib/admin-auth";
-import { validateAdminConfigInput } from "@/lib/admin-config-validation";
+import {
+  getAdminConfigPolicyError,
+  validateAdminConfigInput,
+} from "@/lib/admin-config-validation";
 
 export async function GET() {
   const auth = await getAdminAuthContext();
@@ -42,6 +45,14 @@ export async function POST(request: Request) {
   const payload = validateAdminConfigInput(await request.json().catch(() => null));
   if (!payload.ok) {
     return NextResponse.json({ error: payload.errors.join(" ") }, { status: 400 });
+  }
+
+  const policyError = getAdminConfigPolicyError(
+    payload.data,
+    payload.data.confirmHighRisk,
+  );
+  if (policyError) {
+    return NextResponse.json({ error: policyError }, { status: 400 });
   }
 
   const { data, error } = await auth.supabase

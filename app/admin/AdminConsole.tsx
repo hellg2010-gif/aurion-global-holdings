@@ -3,7 +3,9 @@
 import { FormEvent, useMemo, useState } from "react";
 import {
   adminConfigOptions,
+  getAdminConfigPolicyError,
   type AdminConfigInput,
+  resolveAdminConfigPolicyState,
 } from "@/lib/admin-config-validation";
 
 type ConfigRecord = {
@@ -35,6 +37,12 @@ const DEFAULT_FORM: AdminConfigInput = {
   requiresCredentials: false,
 };
 
+function requestHighRiskConfirmation() {
+  return window.confirm(
+    "This configuration will remain enabled as high-risk. Confirm to continue.",
+  );
+}
+
 export default function AdminConsole({ initialRecords, maskedEmail }: Props) {
   const [records, setRecords] = useState(initialRecords);
   const [form, setForm] = useState(DEFAULT_FORM);
@@ -64,10 +72,25 @@ export default function AdminConsole({ initialRecords, maskedEmail }: Props) {
     setError(null);
 
     try {
+      const policyError = getAdminConfigPolicyError(form);
+      if (policyError && policyError.includes("Approval is required")) {
+        setError(policyError);
+        return;
+      }
+
+      const confirmHighRisk =
+        form.enabled && form.riskLevel === "high"
+          ? requestHighRiskConfirmation()
+          : false;
+      if (form.enabled && form.riskLevel === "high" && !confirmHighRisk) {
+        setError("High-risk confirmation is required before enabling.");
+        return;
+      }
+
       const response = await fetch("/api/admin/config", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, confirmHighRisk }),
       });
 
       if (!response.ok) {
@@ -92,21 +115,30 @@ export default function AdminConsole({ initialRecords, maskedEmail }: Props) {
     setError(null);
 
     try {
-      let confirmHighRisk = false;
-      if (record.risk_level === "high") {
-        confirmHighRisk = window.confirm(
-          "This is a high-risk connector. Confirm enable/disable change.",
-        );
-        if (!confirmHighRisk) {
-          return;
-        }
+      const enabled = !record.enabled;
+      const policyError = getAdminConfigPolicyError({
+        enabled,
+        riskLevel: record.risk_level as AdminConfigInput["riskLevel"],
+        approvalStatus: record.approval_status as AdminConfigInput["approvalStatus"],
+        requiresCredentials: record.requires_credentials,
+      });
+      if (policyError && policyError.includes("Approval is required")) {
+        setError(policyError);
+        return;
+      }
+
+      const confirmHighRisk =
+        enabled && record.risk_level === "high" ? requestHighRiskConfirmation() : false;
+      if (enabled && record.risk_level === "high" && !confirmHighRisk) {
+        setError("High-risk confirmation is required before enabling.");
+        return;
       }
 
       const response = await fetch(`/api/admin/config/${record.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          enabled: !record.enabled,
+          enabled,
           confirmHighRisk,
         }),
       });
@@ -158,6 +190,34 @@ export default function AdminConsole({ initialRecords, maskedEmail }: Props) {
     setError(null);
 
     try {
+      const policyState = resolveAdminConfigPolicyState(
+        {
+          enabled: record.enabled,
+          riskLevel: record.risk_level as AdminConfigInput["riskLevel"],
+          approvalStatus: record.approval_status as AdminConfigInput["approvalStatus"],
+          requiresCredentials: record.requires_credentials,
+        },
+        {
+          riskLevel: record.risk_level as AdminConfigInput["riskLevel"],
+          approvalStatus: record.approval_status as AdminConfigInput["approvalStatus"],
+          requiresCredentials: record.requires_credentials,
+        },
+      );
+      const policyError = getAdminConfigPolicyError(policyState);
+      if (policyError && policyError.includes("Approval is required")) {
+        setError(policyError);
+        return;
+      }
+
+      const confirmHighRisk =
+        policyState.enabled && policyState.riskLevel === "high"
+          ? requestHighRiskConfirmation()
+          : false;
+      if (policyState.enabled && policyState.riskLevel === "high" && !confirmHighRisk) {
+        setError("High-risk confirmation is required before enabling.");
+        return;
+      }
+
       const response = await fetch(`/api/admin/config/${record.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -168,6 +228,7 @@ export default function AdminConsole({ initialRecords, maskedEmail }: Props) {
           riskLevel: record.risk_level,
           approvalStatus: record.approval_status,
           requiresCredentials: record.requires_credentials,
+          confirmHighRisk,
         }),
       });
 

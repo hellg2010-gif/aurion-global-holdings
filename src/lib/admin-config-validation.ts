@@ -20,6 +20,7 @@ export type AdminConfigInput = {
   riskLevel: RiskLevel;
   approvalStatus: ApprovalStatus;
   requiresCredentials: boolean;
+  confirmHighRisk?: boolean;
 };
 
 export type AdminConfigUpdateInput = Partial<AdminConfigInput> & {
@@ -29,6 +30,11 @@ export type AdminConfigUpdateInput = Partial<AdminConfigInput> & {
 export type ValidationResult<T> =
   | { ok: true; data: T }
   | { ok: false; errors: string[] };
+
+export type AdminConfigPolicyState = Pick<
+  AdminConfigInput,
+  "enabled" | "riskLevel" | "approvalStatus" | "requiresCredentials"
+>;
 
 function validateEnum<T extends readonly string[]>(
   value: unknown,
@@ -94,6 +100,9 @@ export function validateAdminConfigInput(input: unknown): ValidationResult<Admin
   if (typeof record.requiresCredentials !== "boolean") {
     errors.push("Requires credentials must be true or false.");
   }
+  if ("confirmHighRisk" in record && typeof record.confirmHighRisk !== "boolean") {
+    errors.push("High-risk confirmation is invalid.");
+  }
 
   if (errors.length > 0) {
     return { ok: false, errors };
@@ -112,6 +121,10 @@ export function validateAdminConfigInput(input: unknown): ValidationResult<Admin
         ? record.approvalStatus
         : "pending") as ApprovalStatus,
       requiresCredentials: record.requiresCredentials as boolean,
+      confirmHighRisk:
+        typeof record.confirmHighRisk === "boolean"
+          ? record.confirmHighRisk
+          : undefined,
     },
   };
 }
@@ -210,3 +223,39 @@ export const adminConfigOptions = {
   riskLevels: RISK_LEVELS,
   approvalStatuses: APPROVAL_STATUSES,
 };
+
+export function resolveAdminConfigPolicyState(
+  existing: AdminConfigPolicyState,
+  updates: AdminConfigUpdateInput,
+): AdminConfigPolicyState {
+  return {
+    enabled: typeof updates.enabled === "boolean" ? updates.enabled : existing.enabled,
+    riskLevel: updates.riskLevel ?? existing.riskLevel,
+    approvalStatus: updates.approvalStatus ?? existing.approvalStatus,
+    requiresCredentials:
+      typeof updates.requiresCredentials === "boolean"
+        ? updates.requiresCredentials
+        : existing.requiresCredentials,
+  };
+}
+
+export function getAdminConfigPolicyError(
+  state: AdminConfigPolicyState,
+  confirmHighRisk?: boolean,
+) {
+  if (!state.enabled) {
+    return null;
+  }
+
+  if (state.approvalStatus !== "approved") {
+    return state.requiresCredentials
+      ? "Approval is required before enabling configurations that require credentials."
+      : "Approval is required before enabling this configuration.";
+  }
+
+  if (state.riskLevel === "high" && confirmHighRisk !== true) {
+    return "High-risk configurations require explicit confirmation before enabling.";
+  }
+
+  return null;
+}

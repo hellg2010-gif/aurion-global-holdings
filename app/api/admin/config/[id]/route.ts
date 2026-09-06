@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { createAdminAuditLogger } from "@/lib/audit-events";
 import { getAdminAuthContext } from "@/lib/admin-auth";
-import { validateAdminConfigUpdateInput } from "@/lib/admin-config-validation";
+import {
+  getAdminConfigPolicyError,
+  resolveAdminConfigPolicyState,
+  validateAdminConfigUpdateInput,
+} from "@/lib/admin-config-validation";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -27,7 +31,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 
   const { data: existing, error: existingError } = await auth.supabase
     .from("admin_config_records")
-    .select("id, enabled, risk_level")
+    .select("id, enabled, risk_level, approval_status, requires_credentials")
     .eq("id", id)
     .single();
 
@@ -35,14 +39,21 @@ export async function PATCH(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Record not found." }, { status: 404 });
   }
 
-  if (
-    typeof payload.data.enabled === "boolean" &&
-    payload.data.enabled !== existing.enabled &&
-    existing.risk_level === "high" &&
-    payload.data.confirmHighRisk !== true
-  ) {
+  const policyError = getAdminConfigPolicyError(
+    resolveAdminConfigPolicyState(
+      {
+        enabled: existing.enabled,
+        riskLevel: existing.risk_level,
+        approvalStatus: existing.approval_status,
+        requiresCredentials: existing.requires_credentials,
+      },
+      payload.data,
+    ),
+    payload.data.confirmHighRisk,
+  );
+  if (policyError) {
     return NextResponse.json(
-      { error: "High-risk changes require confirmation." },
+      { error: policyError },
       { status: 400 },
     );
   }

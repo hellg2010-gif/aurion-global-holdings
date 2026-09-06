@@ -2,6 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { sanitizeAdminNextPath } from "@/lib/admin-login-redirect";
 import { createClientSupabaseClient } from "@/lib/supabase/client";
 import { maskEmail } from "@/lib/email";
 
@@ -11,7 +12,7 @@ const LOGIN_COOLDOWN_SECONDS = 10;
 export default function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") || "/admin";
+  const nextPath = sanitizeAdminNextPath(searchParams.get("next"));
   const reason = searchParams.get("reason");
   const supabase = useMemo(() => createClientSupabaseClient(), []);
 

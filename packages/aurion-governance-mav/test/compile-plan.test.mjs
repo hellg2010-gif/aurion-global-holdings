@@ -56,7 +56,7 @@ test('objective heuristic adds governance modes without workflow', () => {
   const plan = compilePlan({
     objective: 'Council multi-agent verification of governance gates'
   });
-  assert.ok(plan.commands.includes('AI_GOVERNANCE'));
+  assert.equal; assert.ok(plan.commands.includes('AI_GOVERNANCE'));
   assert.ok(plan.commands.includes('AGENTVERIFICATION'));
 });
 
@@ -119,4 +119,32 @@ test('catalog rebuild exports Master AI registry', () => {
 
 test('governance profile includes RELEASEGATE', () => {
   assert.ok(WORKFLOW_PROFILES[GOVERNANCE_MAV].includes('RELEASEGATE'));
+});
+
+
+test('decideApproval hard-blocks maker===checker with 409', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'gov-mav-mc-'));
+  const store = new JsonStore(dir);
+  const runtime = new Runtime(store);
+  await runtime.init();
+  const maker = { id: 'maker-1' };
+  const run = await runtime.createRun(
+    { objective: 'Maker checker separation', workflowId: GOVERNANCE_MAV },
+    maker,
+  );
+  for (let i = 0; i < 80; i++) {
+    const rows = await store.read('runs');
+    if (rows.find((r) => r.id === run.id)?.state === 'completed') break;
+    await new Promise((r) => setTimeout(r, 25));
+  }
+  await runtime.verifyRun(run.id);
+  const approval = await runtime.requestGovernanceReview(run.id, maker);
+  await assert.rejects(
+    () => runtime.decideApproval(approval.id, 'approved', maker),
+    (err) => err && err.status === 409,
+  );
+  const decided = await runtime.decideApproval(approval.id, 'approved', { id: 'checker-2' });
+  assert.equal(decided.status, 'approved');
+  assert.equal(decided.checker, 'checker-2');
+  assert.notEqual(decided.maker, decided.checker);
 });

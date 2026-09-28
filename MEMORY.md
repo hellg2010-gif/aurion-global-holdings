@@ -22,3 +22,9 @@ re-deriving context from scratch.
 - Decision/Outcome: Scaffold added via PR on `feature/agentic-orchestration-scaffold`.
 - Follow-ups: Add `AI_GATEWAY_API_KEY` secret, implement `.agent/scripts/plan.mjs`, link this
   repo to a Vercel project so Gateway env vars are available at build/runtime.
+
+## 2026-09-28 — ADR-0003 ABC strip C (PR #21)
+- Agent: executor (Mastermind ABC C)
+- Task: Strip Vercel-as-`.com`-host claims and `/v0` from MAV/HUB docs+code; align Eng stub to `/hub/v0.1`.
+- Decision/Outcome: README/ROUTING/UPGRADE rewritten host-agnostic/Cloudflare; `@vercel/analytics` removed; plan.mjs uses `AI_GATEWAY_URL` (no hardcoded `*.vercel.app`); local `GET /hub/v0.1/health` stub added. Trust RC1/RC2 unchanged. Root `vercel.json` kept as optional Next rewrite/header config only.
+- Follow-ups: Platform teardown of any Vercel project; owner Integrations disconnect; Architecture contracts remain SoR for OpenAPI.

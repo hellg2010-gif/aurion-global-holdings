@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const GATEWAY_URL = "https://gateway.ai.vercel.app/v1/chat/completions";
-const MODEL = "xai/grok-4.3";
+/** Provider-neutral AI gateway URL (set AI_GATEWAY_URL). Do not hardcode vendor preview hosts. */
+const GATEWAY_URL = process.env.AI_GATEWAY_URL || "";
+const MODEL = process.env.AI_GATEWAY_MODEL || "xai/grok-4.3";
 
 const SYSTEM_PROMPT = `You are the AURION orchestrator agent. Decompose the incoming GitHub
 issue into atomic subtasks. For each subtask, assign an agent using these rules:
@@ -39,6 +40,10 @@ async function main() {
   const apiKey = process.env.AI_GATEWAY_API_KEY;
   if (!apiKey) {
     console.error("Missing AI_GATEWAY_API_KEY");
+    process.exit(1);
+  }
+  if (!GATEWAY_URL) {
+    console.error("Missing AI_GATEWAY_URL (provider-neutral chat completions endpoint)");
     process.exit(1);
   }
 

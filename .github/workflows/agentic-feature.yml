@@ -22,9 +22,10 @@ jobs:
         with:
           node-version: 22
 
-      - name: Call orchestrator via Vercel AI Gateway
+      - name: Call orchestrator via AI gateway
         env:
           AI_GATEWAY_API_KEY: ${{ secrets.AI_GATEWAY_API_KEY }}
+          AI_GATEWAY_URL: ${{ secrets.AI_GATEWAY_URL }}
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: node .agent/scripts/plan.mjs > plan.json

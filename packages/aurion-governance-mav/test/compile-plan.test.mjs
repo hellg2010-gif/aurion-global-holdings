@@ -56,7 +56,7 @@ test('objective heuristic adds governance modes without workflow', () => {
   const plan = compilePlan({
     objective: 'Council multi-agent verification of governance gates'
   });
-  assert.equal; assert.ok(plan.commands.includes('AI_GOVERNANCE'));
+  assert.ok(plan.commands.includes('AI_GOVERNANCE'));
   assert.ok(plan.commands.includes('AGENTVERIFICATION'));
 });
 

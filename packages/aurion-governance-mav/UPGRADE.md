@@ -51,7 +51,10 @@ import { Runtime, JsonStore, GOVERNANCE_MAV, compilePlan } from 'aurion-governan
 2. Suggested route basePath: **`/api/governance`** (matches `Runtime.status().basePath` and `vercel.json` rewrites).
 3. Env vars (typical):
    - `AURION_DATA_DIR` — persistent volume / blob mount for JsonStore
-   - `AURION_GOVERNANCE_ENABLED=true`
+   - `AURION_GOVERNANCE_ENABLED=true` — **required**; API is OFF when unset
+   - `AURION_GOVERNANCE_AUTH_TOKEN` + optional `AURION_GOVERNANCE_ACTOR_ID` — single Bearer/token → actor map
+   - `AURION_GOVERNANCE_AUTH_TOKENS` — JSON map `{"tokenA":"alice","tokenB":"bob"}` for maker≠checker
+   - Mutating `/api/governance` POSTs require `Authorization: Bearer <token>` (or `x-aurion-auth`); client `actorId` / `x-aurion-actor` are ignored
    - `AI_GATEWAY_API_KEY` — when wiring live multi-model verify
 4. Serverless entry (future): thin handler that constructs `JsonStore` + `Runtime`, exposes `POST /api/governance/runs`, `POST /api/governance/runs/:id/verify`, `POST /api/governance/runs/:id/review`.
 5. Deploy with existing Vercel project linked to the holdings repo; keep this package as ESM (`"type": "module"`).

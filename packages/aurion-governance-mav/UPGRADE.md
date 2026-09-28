@@ -45,21 +45,23 @@ npm run demo
 import { Runtime, JsonStore, GOVERNANCE_MAV, compilePlan } from 'aurion-governance-mav';
 ```
 
-## Plug into Vercel
+## Plug into the Next.js host (host-agnostic / Cloudflare target)
 
-1. Copy this package into the app (e.g. `packages/gov-mav` or `lib/aurion-gov-mav`).
-2. Suggested route basePath: **`/api/governance`** (matches `Runtime.status().basePath` and `vercel.json` rewrites).
+ADR-0003 Accepted: production `aurionglobalholdings.com` is **not** claimed on Vercel. Prefer Cloudflare / owner-attached DNS. Optional `vercel.json` in this folder is rewrite/header config only — merge into the parent Next app config if useful; it does **not** mean `.com` runs on Vercel.
+
+1. Copy this package into the app (e.g. `packages/aurion-governance-mav` or `lib/aurion-gov-mav`).
+2. Suggested route basePath: **`/api/governance`** (matches `Runtime.status().basePath` and parent rewrite/header config).
 3. Env vars (typical):
    - `AURION_DATA_DIR` — persistent volume / blob mount for JsonStore
    - `AURION_GOVERNANCE_ENABLED=true` — **required**; API is OFF when unset
    - `AURION_GOVERNANCE_AUTH_TOKEN` + optional `AURION_GOVERNANCE_ACTOR_ID` — single Bearer/token → actor map
    - `AURION_GOVERNANCE_AUTH_TOKENS` — JSON map `{"tokenA":"alice","tokenB":"bob"}` for maker≠checker
    - Mutating `/api/governance` POSTs require `Authorization: Bearer <token>` (or `x-aurion-auth`); client `actorId` / `x-aurion-actor` are ignored
-   - `AI_GATEWAY_API_KEY` — when wiring live multi-model verify
-4. Serverless entry (future): thin handler that constructs `JsonStore` + `Runtime`, exposes `POST /api/governance/runs`, `POST /api/governance/runs/:id/verify`, `POST /api/governance/runs/:id/review`.
-5. Deploy with existing Vercel project linked to the holdings repo; keep this package as ESM (`"type": "module"`).
+   - `AI_GATEWAY_API_KEY` / `AI_GATEWAY_URL` — when wiring live multi-model verify (provider-neutral; no hardcoded vendor preview hosts)
+4. Serverless/edge entry (future): thin handler that constructs `JsonStore` + `Runtime`, exposes `POST /api/governance/runs`, `POST /api/governance/runs/:id/verify`, `POST /api/governance/runs/:id/review`.
+5. Deploy on the approved host for `aurionglobalholdings.com` (Cloudflare target); keep this package as ESM (`"type": "module"`).
 
-`vercel.json` in this folder is a **starter** rewrite/header stub — merge into the parent app’s Vercel config rather than deploying this folder alone.
+HUB contract stubs use **`/hub/v0.1`** (not `/v0`) per Architecture OpenAPI 0.1.
 
 ## GitHub next steps (`hellg2010-gif/aurion-global-holdings`)
 

@@ -28,7 +28,11 @@ function err(e: unknown, fallback = 500) {
 async function ensureEnabled() {
   if (!governanceEnabled()) {
     return json(
-      { ok: false, error: 'Governance API disabled (AURION_GOVERNANCE_ENABLED)' },
+      {
+        ok: false,
+        error:
+          'Governance API disabled. Set AURION_GOVERNANCE_ENABLED=true (or 1) to enable.',
+      },
       503,
     );
   }
@@ -89,6 +93,10 @@ export async function GET(req: NextRequest, ctx: RouteCtx) {
  * POST /api/governance/runs/:id/verify
  * POST /api/governance/runs/:id/review
  * POST /api/governance/approvals/:id/decide
+ *
+ * Mutating / decision paths require auth-bound actor identity
+ * (Bearer or x-aurion-auth mapped via AURION_GOVERNANCE_AUTH_*).
+ * Client body.actorId / x-aurion-actor / x-actor-id are ignored.
  */
 export async function POST(req: NextRequest, ctx: RouteCtx) {
   const blocked = await ensureEnabled();
@@ -96,7 +104,8 @@ export async function POST(req: NextRequest, ctx: RouteCtx) {
   try {
     const { path = [] } = await ctx.params;
     const body = await req.json().catch(() => ({}));
-    const actor = actorFromRequest(req, body);
+    // Auth-bound only — never trust client-supplied actorId for maker≠checker paths
+    const actor = actorFromRequest(req, body, { requireAuth: true });
     const rt = await getGovernanceRuntime();
 
     if (path.length === 1 && path[0] === 'runs') {

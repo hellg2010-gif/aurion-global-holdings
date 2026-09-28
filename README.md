@@ -2,7 +2,8 @@
 
 Corporate + marketplace platform for AURION Global Holdings PLC — an integrated agro-industrial and commercial group connecting Ethiopian resources, manufacturing, logistics and global markets.
 
-**Live domain target:** [jewelry.aurionglobalholdings.com](https://jewelry.aurionglobalholdings.com/)
+**Canonical host (locked):** [aurionglobalholdings.com](https://aurionglobalholdings.com)  
+**Host target:** Cloudflare / host-agnostic (ADR-0003 Accepted — **not** Vercel as the `.com` host)
 
 ## Structure
 
@@ -11,6 +12,8 @@ Corporate + marketplace platform for AURION Global Holdings PLC — an integrate
 - `/ecosystem` — Interactive value-chain flowchart + traceability
 - `/businesses/global-commerce` — Marketplace (B2C / B2B) with real product photography
 - `/investors`, `/sustainability`, `/about`, `/contact`
+- `/hub/v0.1/*` — Local Eng HUB API stub (Architecture OpenAPI 0.1; **not** `/v0`)
+- `/api/governance` — MAV governance runtime (default **OFF**; auth-bound actors)
 
 ## Divisions
 
@@ -25,7 +28,7 @@ Corporate + marketplace platform for AURION Global Holdings PLC — an integrate
 ## Features
 
 - Interactive ecosystem diagram
-- Digital product passports / Trace IDs
+- Digital product passports / Trace IDs (design stage)
 - Carbon footprint estimates (product level)
 - Smart-contract verification (design stage)
 - Blockchain anchoring for origin certificates (under investigation)
@@ -35,20 +38,26 @@ Corporate + marketplace platform for AURION Global Holdings PLC — an integrate
 - Next.js 15/16 (App Router)
 - Tailwind CSS 4
 - TypeScript
-- Deployed on Vercel
+- Production `.com` host: Cloudflare / owner-attached DNS (see `docs/adr-0003-host.md`)
+
+## HUB contract stub (ADR-0003)
+
+```bash
+# after npm run dev
+curl -s http://localhost:3000/hub/v0.1/health
+# {"status":"ok","phase":"hub-phase1-intermediary"}
+```
+
+OpenAPI servers are `https://aurionglobalholdings.com/hub/v0.1` and localhost only (ADR-0003).
 
 ## Local Development
 
 ```bash
 npm install
-cp .env.example .env.local
-# fill payment keys if needed
 npm run dev
 ```
 
-## Environment
-
-See `.env.example`. Never commit real API keys.
+Node **22** is what CI uses. Optional env: see governance docs in `packages/aurion-governance-mav/UPGRADE.md`. Never commit real API keys.
 
 ## Contact
 

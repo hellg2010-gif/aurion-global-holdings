@@ -5,11 +5,15 @@ on:
     branches:
       - main
       - feature/**
+      - feat/**
+      - fix/**
       - copilot/**
   pull_request:
     branches:
       - main
       - feature/**
+      - feat/**
+      - fix/**
       - copilot/**
 
 permissions:
@@ -35,3 +39,20 @@ jobs:
         run: npm run build
       - name: Lint application
         run: npm run lint
+
+  governance-mav:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: MAV unit tests
+        run: npm test --prefix packages/aurion-governance-mav
+      - name: CI verifyRun gate (G6)
+        run: npm run ci:verify-run --prefix packages/aurion-governance-mav
+        env:
+          AURION_GOVERNANCE_ENABLED: 'true'

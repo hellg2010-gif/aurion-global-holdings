@@ -1,4 +1,21 @@
 {
   "framework": "nextjs",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "headers": [
+    {
+      "source": "/api/governance(.*)",
+      "headers": [
+        {
+          "key": "X-Aurion-Governance",
+          "value": "mav-2.1.0"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/governance",
+      "destination": "/api/governance"
+    }
+  ]
 }

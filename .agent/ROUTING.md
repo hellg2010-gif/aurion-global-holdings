@@ -58,7 +58,7 @@ No model or connector is trusted as a system of record. Material facts, calculat
 
 - Follow API-first, modular/domain-driven, event-aware design with observable failure modes.
 - Require typecheck, lint, unit tests, integration tests appropriate to the change, and a deployment/rollback plan for production-impacting work.
-- Use GitHub PRs and Vercel preview deployments. Production deployment requires a human approval gate.
+- Use GitHub PRs and host-agnostic preview deployments (Cloudflare target for aurionglobalholdings.com). Production deployment requires a human approval gate. Do not treat Vercel as the production `.com` host (ADR-0003).
 - Preserve backward compatibility or provide an explicit versioned migration and rollback path.
 
 ## Connector authorization gate
@@ -79,7 +79,9 @@ A connector appearing in a registry does **not** mean it is connected, authorize
 | Domain | Typical use | Control |
 |---|---|---|
 | GitHub | Source control, issues, PRs, CI status, secret scanning | Feature branches and review gates; no credentials in repository |
-| Vercel | Preview deployments, environment configuration, AI gateway | Human approval for production and environment writes |
+| Cloudflare | Production host target for aurionglobalholdings.com (ADR-0003) | Owner DNS/attach; human approval for production |
+| Optional platform connectors (e.g. Vercel UI) | Preview tooling / owner Integrations only — not `.com` SoR | Human approval; do not advertise as production `.com` host |
+| AI gateway (provider-neutral) | Orchestrator model routing via `AI_GATEWAY_URL` | Secrets in CI; no hardcoded vendor preview hosts in repo |
 | Supabase / Neon | Application data and Postgres | Schema migrations, backups and least-privilege service accounts |
 | Stripe / Wise | Payments and settlement | Human-approved payment actions; idempotency, reconciliation and audit trails |
 | BigCommerce / Shopify | Catalog, storefront and order operations | Scoped store access; test/storefront verification before production changes |

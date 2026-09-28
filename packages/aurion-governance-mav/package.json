@@ -1,0 +1,27 @@
+{
+  "name": "aurion-governance-mav",
+  "version": "2.1.0",
+  "type": "module",
+  "description": "AURION Governance: Multi-Agent Verification (v2)",
+  "main": "index.mjs",
+  "exports": {
+    ".": "./index.mjs",
+    "./catalog": "./catalog.v2.mjs",
+    "./core": "./core.v2.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/*.mjs",
+    "demo": "node scripts/demo.mjs",
+    "ci:verify-run": "node scripts/ci-verify-run.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "aurion",
+    "governance",
+    "multi-agent",
+    "verification"
+  ],
+  "license": "UNLICENSED"
+}

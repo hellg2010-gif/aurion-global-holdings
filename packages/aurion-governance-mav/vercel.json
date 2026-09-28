@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/governance/(.*)", "destination": "/api/governance" },
+    { "source": "/governance", "destination": "/api/governance" }
+  ],
+  "headers": [
+    {
+      "source": "/api/governance(.*)",
+      "headers": [
+        { "key": "X-Aurion-Governance", "value": "mav-2.1.0" }
+      ]
+    }
+  ]
+}

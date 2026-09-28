@@ -6,3 +6,7 @@ coverage/
 .env.*
 !.env.example
 npm-debug.log*
+
+# Governance MAV local store
+.data/
+packages/aurion-governance-mav/.data/

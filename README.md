@@ -2,7 +2,7 @@
 
 Corporate + marketplace platform for AURION Global Holdings PLC — an integrated agro-industrial and commercial group connecting Ethiopian resources, manufacturing, logistics and global markets.
 
-**Live domain target:** [aurionglobal.online](https://aurionglobal.online)
+**Live domain target:** [jewelry.aurionglobalholdings.com](https://jewelry.aurionglobalholdings.com/)
 
 ## Structure
 
@@ -52,4 +52,4 @@ See `.env.example`. Never commit real API keys.
 
 ## Contact
 
-wondmeneh@aurionglobal.store
+info-ecosys@aurionglobalholdings.com

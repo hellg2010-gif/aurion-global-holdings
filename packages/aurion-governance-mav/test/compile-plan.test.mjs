@@ -109,7 +109,10 @@ test('catalog rebuild exports Master AI registry', () => {
   assert.ok(MASTER_STACKS.default.includes('FINALVERIFICATION'));
   assert.ok(MASTER_STACKS.aurion.includes('AURIONMODE'));
   assert.ok(CONNECTORS.includes('GitHub'));
-  assert.ok(CONNECTORS.includes('Vercel'));
+  assert.ok(CONNECTORS.includes('Cloudflare'));
+  assert.equal(CONNECTORS.includes('Vercel'), false);
+  assert.equal(ALL_MODES.includes('VERCELMODE'), false);
+  assert.ok(ALL_MODES.includes('CLOUDFLAREWORKERS'));
   assert.equal(CONNECTOR_POLICY.doNotAssumeConnected, true);
   assert.ok(Object.keys(SKILL_FAMILIES).length >= 5);
   assert.ok(ALL_MODES.includes('ARCHITECTUREAUDIT'));

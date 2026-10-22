@@ -28,3 +28,9 @@ re-deriving context from scratch.
 - Task: Strip Vercel-as-`.com`-host claims and `/v0` from MAV/HUB docs+code; align Eng stub to `/hub/v0.1`.
 - Decision/Outcome: README/ROUTING/UPGRADE rewritten host-agnostic/Cloudflare; `@vercel/analytics` removed; plan.mjs uses `AI_GATEWAY_URL` (no hardcoded `*.vercel.app`); local `GET /hub/v0.1/health` stub added. Trust RC1/RC2 unchanged. Root `vercel.json` kept as optional Next rewrite/header config only.
 - Follow-ups: Platform teardown of any Vercel project; owner Integrations disconnect; Architecture contracts remain SoR for OpenAPI.
+
+## 2026-10-22 — Cloudflare Workers migration
+- Agent: executor
+- Task: Move application build and deployment configuration to Cloudflare Workers.
+- Decision/Outcome: Added OpenNext/Wrangler build and deploy configuration, migrated governance rewrites into Next config, and removed retired deployment configs and catalog entries. Kept `/hub/v0.1` as the separately versioned HUB API contract.
+- Follow-ups: Cloudflare account owner must attach the production domain and configure credentials; keep governance disabled until its file-backed store is replaced with durable Cloudflare storage. Account-level integration disconnects require owner access.

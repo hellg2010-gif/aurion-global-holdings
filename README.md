@@ -3,7 +3,7 @@
 Corporate + marketplace platform for AURION Global Holdings PLC — an integrated agro-industrial and commercial group connecting Ethiopian resources, manufacturing, logistics and global markets.
 
 **Canonical host (locked):** [aurionglobalholdings.com](https://aurionglobalholdings.com)  
-**Host target:** Cloudflare / host-agnostic (ADR-0003 Accepted — **not** Vercel as the `.com` host)
+**Production host:** Cloudflare Workers (ADR-0003)
 
 ## Structure
 
@@ -12,7 +12,7 @@ Corporate + marketplace platform for AURION Global Holdings PLC — an integrate
 - `/ecosystem` — Interactive value-chain flowchart + traceability
 - `/businesses/global-commerce` — Marketplace (B2C / B2B) with real product photography
 - `/investors`, `/sustainability`, `/about`, `/contact`
-- `/hub/v0.1/*` — Local Eng HUB API stub (Architecture OpenAPI 0.1; **not** `/v0`)
+- `/hub/v0.1/*` — Local Eng HUB API stub (Architecture OpenAPI 0.1)
 - `/api/governance` — MAV governance runtime (default **OFF**; auth-bound actors)
 
 ## Divisions
@@ -35,10 +35,10 @@ Corporate + marketplace platform for AURION Global Holdings PLC — an integrate
 
 ## Tech Stack
 
-- Next.js 15/16 (App Router)
+- Next.js 16 (App Router)
 - Tailwind CSS 4
 - TypeScript
-- Production `.com` host: Cloudflare / owner-attached DNS (see `docs/adr-0003-host.md`)
+- Production host: Cloudflare Workers with owner-attached DNS (see `docs/adr-0003-host.md`)
 
 ## HUB contract stub (ADR-0003)
 
@@ -58,6 +58,18 @@ npm run dev
 ```
 
 Node **22** is what CI uses. Optional env: see governance docs in `packages/aurion-governance-mav/UPGRADE.md`. Never commit real API keys.
+
+## Cloudflare deployment
+
+The production build uses OpenNext for Cloudflare Workers:
+
+```bash
+npm run cf:build
+npm run cf:preview
+npm run cf:deploy
+```
+
+Authenticate Wrangler with the Cloudflare account that owns the production zone before previewing or deploying. Attach `aurionglobalholdings.com` to the Worker in that account and configure production secrets there; repository changes cannot transfer DNS, account ownership, or revoke external integrations. The governance API remains disabled by default; do not enable it in Workers until its file-backed store is replaced with durable Cloudflare storage.
 
 ## Contact
 

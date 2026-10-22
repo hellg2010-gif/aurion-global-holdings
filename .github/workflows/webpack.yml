@@ -35,8 +35,8 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
-      - name: Build application
-        run: npm run build
+      - name: Build Cloudflare Worker
+        run: npm run cf:build
       - name: Lint application
         run: npm run lint
 
